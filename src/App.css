@@ -1,13 +1,14 @@
-/* Globale Variablen basierend auf dem Design der App-Screenshots */
+/* --- Globale Variablen & Design-System --- */
 :root {
-  --bg-dark: #22262a; /* Hintergrund aus den Screenshots */
+  --bg-dark: #22262a; 
   --bg-darker: #1a1d21;
   --text-main: #f3f4f6;
   --text-muted: #9ca3af;
-  --accent-green: #1a8e56; /* Das Grün aus den Buttons im Screenshot */
+  --accent-green: #1a8e56; /* Das Grün aus der App */
   --accent-green-hover: #147043;
-  --accent-red: #ef4444; /* Aus dem Abmelden Button */
+  --accent-red: #ef4444; 
   --border-color: #374151;
+  --transition: all 0.2s ease;
 }
 
 * {
@@ -23,67 +24,25 @@ body {
   line-height: 1.6;
 }
 
-.landing-page {
-  overflow-x: hidden;
-}
-
-/* --- Typografie & Buttons --- */
-h1, h2, h3 {
-  font-weight: 600;
-  line-height: 1.2;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.btn-primary {
-  background-color: var(--accent-green);
-  color: white;
-  padding: 0.5rem 1rem;
-}
-
-.btn-primary:hover {
-  background-color: var(--accent-green-hover);
-}
-
-.btn-secondary {
-  background-color: transparent;
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-  display: inline-block;
-  border-radius: 6px;
-}
-
-.btn-secondary:hover {
-  background-color: var(--border-color);
-}
-
-.large {
-  padding: 0.75rem 1.5rem;
-  font-size: 1.1rem;
-}
-
 /* --- Navigation --- */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem 5%;
+  padding: 1rem 5%;
   background-color: var(--bg-darker);
   border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-.nav-brand {
+.nav-brand-link {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
 }
 
 .nav-brand h1 {
@@ -99,11 +58,54 @@ button {
 .nav-links a {
   color: var(--text-muted);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: var(--transition);
+  font-weight: 500;
 }
 
-.nav-links a:hover {
+.nav-links a:hover, 
+.nav-links a.active {
   color: var(--text-main);
+}
+
+/* --- Buttons --- */
+button, .btn-primary, .btn-secondary {
+  cursor: pointer;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: var(--transition);
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background-color: var(--accent-green);
+  color: white;
+  padding: 0.6rem 1.2rem;
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-green-hover);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  padding: 0.6rem 1.2rem;
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color);
+}
+
+.large {
+  padding: 0.8rem 1.8rem;
+  font-size: 1.1rem;
 }
 
 /* --- Hero Section --- */
@@ -135,8 +137,14 @@ button {
 
 .hero-title {
   font-size: 3.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-byline {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  font-style: italic;
   margin-bottom: 1.5rem;
-  letter-spacing: -1px;
 }
 
 .hero-subtitle {
@@ -161,7 +169,7 @@ button {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   border: 1px solid var(--border-color);
   transform: rotateY(-5deg) rotateX(5deg);
-  transition: transform 0.3s ease;
+  transition: transform 0.4s ease;
 }
 
 .hero-image:hover {
@@ -170,7 +178,7 @@ button {
 
 /* --- Features Section --- */
 .features-section {
-  padding: 5rem 5%;
+  padding: 6rem 5%;
   background-color: var(--bg-dark);
 }
 
@@ -184,43 +192,28 @@ button {
   margin-bottom: 1rem;
 }
 
-.section-header p {
-  color: var(--text-muted);
-  font-size: 1.1rem;
-}
-
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 2rem;
 }
 
 .feature-card {
   background-color: var(--bg-darker);
-  padding: 2rem;
+  padding: 2.5rem;
   border-radius: 12px;
   border: 1px solid var(--border-color);
-  transition: transform 0.2s ease;
+  transition: var(--transition);
 }
 
 .feature-card:hover {
-  transform: translateY(-5px);
   border-color: var(--accent-green);
+  transform: translateY(-5px);
 }
 
 .feature-icon {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
-}
-
-.feature-card h3 {
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
-}
-
-.feature-card p {
-  color: var(--text-muted);
-  font-size: 0.95rem;
 }
 
 /* --- Showcase Section --- */
@@ -231,23 +224,11 @@ button {
   gap: 4rem;
   background-color: var(--bg-darker);
   border-top: 1px solid var(--border-color);
-  border-bottom: 1px solid var(--border-color);
 }
 
-.showcase-content {
-  flex: 1;
-}
-
-.showcase-content h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.showcase-content p {
-  color: var(--text-muted);
-  font-size: 1.1rem;
-  margin-bottom: 2rem;
-}
+.showcase-content { flex: 1; }
+.showcase-content h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
+.showcase-content p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 2rem; }
 
 .showcase-list {
   list-style: none;
@@ -263,15 +244,68 @@ button {
   gap: 0.5rem;
 }
 
-.showcase-image-wrapper {
-  flex: 1.2;
-}
-
+.showcase-image-wrapper { flex: 1.2; }
 .showcase-image {
   width: 100%;
   border-radius: 8px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
   border: 1px solid var(--border-color);
+}
+
+/* --- Creator Section --- */
+.creator-section {
+  padding: 6rem 5%;
+  background-color: var(--bg-dark);
+  border-top: 1px solid var(--border-color);
+}
+
+.creator-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.creator-content h3 {
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.creator-content p {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  line-height: 1.8;
+}
+
+.creator-signature {
+  margin-top: 2rem;
+  text-align: right;
+  font-style: italic;
+  color: var(--text-main);
+}
+
+/* --- Install Page --- */
+.install-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  padding: 4rem 5%;
+  background: radial-gradient(circle at center, var(--bg-dark) 0%, var(--bg-darker) 100%);
+}
+
+.install-content {
+  max-width: 600px;
+  text-align: center;
+  background-color: var(--bg-darker);
+  padding: 4rem;
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.install-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+  display: block;
 }
 
 /* --- Tech Section --- */
@@ -279,17 +313,7 @@ button {
   padding: 6rem 5%;
   text-align: center;
   background-color: var(--bg-dark);
-}
-
-.tech-section h2 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
-.tech-section p {
-  color: var(--text-muted);
-  margin-bottom: 3rem;
-  font-size: 1.1rem;
+  border-top: 1px solid var(--border-color);
 }
 
 .tech-badges {
@@ -297,7 +321,7 @@ button {
   justify-content: center;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 4rem;
+  margin: 3rem 0;
 }
 
 .tech-badge {
@@ -306,15 +330,12 @@ button {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
 /* --- Footer --- */
 .footer {
   background-color: #111;
-  padding: 2rem 5%;
+  padding: 3rem 5%;
   text-align: center;
   color: var(--text-muted);
   border-top: 1px solid var(--border-color);
@@ -325,37 +346,21 @@ button {
   .hero-section, .showcase-section {
     flex-direction: column;
     text-align: center;
-    padding-top: 3rem;
+    padding: 3rem 5%;
   }
 
-  .hero-actions {
-    justify-content: center;
-  }
-
-  .hero-image {
-    transform: none;
-    margin-top: 2rem;
-  }
+  .hero-title { font-size: 2.5rem; }
+  .hero-actions { justify-content: center; }
+  .hero-image { transform: none; margin-top: 2rem; }
   
-  .hero-title {
-    font-size: 2.5rem;
-  }
-
-  .showcase-list {
-    align-items: center;
-  }
-
-  .nav-links {
-    display: none; /* Auf mobilen Geräten ausblenden für ein sauberes Layout */
-  }
+  .showcase-list { align-items: center; }
+  .nav-links { display: none; } /* Vereinfachung für Mobile */
+  
+  .creator-content p { text-align: center; }
+  .creator-signature { text-align: center; }
 }
 
 @media (max-width: 480px) {
-  .hero-actions {
-    flex-direction: column;
-  }
-  
-  .tech-badges {
-    flex-direction: column;
-  }
+  .hero-actions { flex-direction: column; }
+  .install-content { padding: 2rem; }
 }
