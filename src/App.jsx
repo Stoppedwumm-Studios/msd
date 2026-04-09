@@ -1,121 +1,121 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React from 'react';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <div className="landing-page">
+      {/* Navigation */}
+      <nav className="navbar">
+        <div className="nav-brand">
+          <span className="logo-icon">⛪</span>
+          <h1>MSD App</h1>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+        <div className="nav-links">
+          <a href="#features">Funktionen</a>
+          <a href="#tech">Technologie</a>
+        </div>
+        <button onClick={() => {window.location.pathname="latest.zip"}} className="btn-primary nav-btn">Jetzt Herunterladen</button>
+      </nav>
+
+      {/* Hero Section */}
+      <header className="hero-section">
+        <div className="hero-content">
+          <span className="badge">Für Kirchengemeinden</span>
+          <h2 className="hero-title">Die smarte Verwaltung für Ihre Messdiener</h2>
+          <p className="hero-subtitle">
+            Automatisierte Dienstpläne, einfaches Vertretungssystem und volle Übersicht über Ausfälle. 
+            Sparen Sie sich das Zettelchaos und digitalisieren Sie Ihre Sakristei.
           </p>
+          <div className="hero-actions">
+            <button className="btn-primary large" onClick={() => {window.location.pathname="latest.zip"}}>App Herunterladen</button>
+            <a href="#features" className="btn-secondary large">Mehr erfahren</a>
+          </div>
         </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="hero-image-wrapper">
+          <img src="/1.png" alt="MSD App Dashboard" className="hero-image" />
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
+      </header>
+
+      {/* Features Section */}
+      <section id="features" className="features-section">
+        <div className="section-header">
+          <h2>Alles, was Ihre Gemeinde braucht</h2>
+          <p>Entwickelt, um die Organisation von Messdienern so einfach wie möglich zu machen.</p>
+        </div>
+
+        <div className="features-grid">
+          {/* Feature 1 */}
+          <div className="feature-card">
+            <div className="feature-icon">⚙️</div>
+            <h3>Automatische Pläne</h3>
+            <p>Generieren Sie Dienstpläne per Knopfdruck. Das System berücksichtigt automatisch alle Abwesenheiten und Regeln Ihrer Gemeinde.</p>
+          </div>
+
+          {/* Feature 2 */}
+          <div className="feature-card">
+            <div className="feature-icon">📅</div>
+            <h3>Flexible Termine</h3>
+            <p>Tragen Sie Einzeltermine (wie Urlaub) oder Dauer-Termine (z.B. "Jeden Freitag Fußballtraining") ein, damit niemand fälschlicherweise eingeteilt wird.</p>
+          </div>
+
+          {/* Feature 3 */}
+          <div className="feature-card">
+            <div className="feature-icon">🤝</div>
+            <h3>Vertretungssystem</h3>
+            <p>Jemand ist spontan krank? Eine Anfrage in der App genügt. Andere können die Vertretung annehmen und der Plan aktualisiert sich sofort von selbst.</p>
+          </div>
+
+          {/* Feature 4 */}
+          <div className="feature-card">
+            <div className="feature-icon">🔔</div>
+            <h3>Benachrichtigungen</h3>
+            <p>Automatische Erinnerungen, wenn eine Messe ansteht oder Benachrichtigungen, falls jemand unentschuldigt fehlt. So bleibt der Altar nie leer.</p>
+          </div>
         </div>
       </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {/* Showcase Section */}
+      <section className="showcase-section">
+        <div className="showcase-content">
+          <h2>Einzel- und Dauertermine im Blick</h2>
+          <p>
+            Geben Sie Ihren Messdienern die Freiheit, ihre Verfügbarkeiten selbst zu verwalten. 
+            Egal ob der Sommerurlaub ansteht oder das wöchentliche Hobby – die App blockt die Zeiten automatisch für die Planung.
+          </p>
+          <ul className="showcase-list">
+            <li>✔️ Einfache Übersicht der eigenen Termine</li>
+            <li>✔️ Klare Trennung zwischen einmalig und dauerhaft</li>
+            <li>✔️ Sofortige Synchronisation mit dem Dienstplan</li>
+          </ul>
+        </div>
+        <div className="showcase-image-wrapper">
+          <img src="/0.png" alt="Terminverwaltung in der MSD App" className="showcase-image" />
+        </div>
+      </section>
+
+      {/* Tech Stack Section */}
+      <section id="tech" className="tech-section">
+        <h2>Einfaches Hosting für Ihre IT-Ehrenamtlichen</h2>
+        <p>Modernste Technologie, verpackt für eine unkomplizierte Einrichtung auf dem Server Ihrer Gemeinde.</p>
+        <div className="tech-badges">
+          <span className="tech-badge">🐳 Docker Compose Ready</span>
+          <span className="tech-badge">🐘 PHP Frontend</span>
+          <span className="tech-badge">🗄️ SQL Datenbank</span>
+          <span className="tech-badge">🐍 Python Cronjobs</span>
+        </div>
+        <div className="download-cta">
+          <button className="btn-primary large" onClick={() => {window.location.pathname="latest.zip"}}>Jetzt Source Code Herunterladen</button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-content">
+          <p>&copy; {new Date().getFullYear()} MSD App - Messdiener Verwaltungstool. Open Source für Gemeinden.</p>
+        </div>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
