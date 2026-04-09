@@ -22,6 +22,7 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-main);
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 /* --- Navigation --- */
@@ -101,6 +102,21 @@ button, .btn-primary, .btn-secondary {
 
 .btn-secondary:hover {
   background-color: var(--border-color);
+}
+
+.btn-secondary.small {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.btn-highlight {
+  border-color: var(--accent-green) !important;
+  color: var(--accent-green) !important;
+}
+
+.btn-highlight:hover {
+  background-color: var(--accent-green) !important;
+  color: white !important;
 }
 
 .large {
@@ -251,6 +267,82 @@ button, .btn-primary, .btn-secondary {
   border: 1px solid var(--border-color);
 }
 
+/* --- Versions Page --- */
+.versions-page {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 4rem 5%;
+  min-height: 80vh;
+}
+
+.table-container {
+  background-color: var(--bg-darker);
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+  margin-top: 3rem;
+}
+
+.versions-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.versions-table th {
+  background-color: rgba(255, 255, 255, 0.03);
+  padding: 1.2rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.versions-table td {
+  padding: 1.2rem;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.versions-table tr:last-child td {
+  border-bottom: none;
+}
+
+.versions-table tr:hover {
+  background-color: rgba(255, 255, 255, 0.01);
+}
+
+.version-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--border-color);
+}
+
+.status-dot.active {
+  background-color: var(--accent-green);
+  box-shadow: 0 0 8px var(--accent-green);
+}
+
+.info-box {
+  margin-top: 3rem;
+  padding: 1.5rem;
+  background-color: rgba(26, 142, 86, 0.05);
+  border-left: 4px solid var(--accent-green);
+  border-radius: 4px;
+  color: var(--text-muted);
+}
+
+.text-right { text-align: right; }
+.text-center { text-align: center; padding: 3rem; }
+
 /* --- Creator Section --- */
 .creator-section {
   padding: 6rem 5%;
@@ -354,10 +446,17 @@ button, .btn-primary, .btn-secondary {
   .hero-image { transform: none; margin-top: 2rem; }
   
   .showcase-list { align-items: center; }
-  .nav-links { display: none; } /* Vereinfachung für Mobile */
+  .nav-links { display: none; } 
   
   .creator-content p { text-align: center; }
   .creator-signature { text-align: center; }
+}
+
+@media (max-width: 600px) {
+  .versions-table th:nth-child(2),
+  .versions-table td:nth-child(2) {
+    display: none; /* Verstecke Dateiname auf kleinen Bildschirmen */
+  }
 }
 
 @media (max-width: 480px) {

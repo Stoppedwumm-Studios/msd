@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 function LandingPage() {
     const navigate = useNavigate();
 const handleDownload = () => {
-  window.location.href = "/latest.zip";
+  window.location.href = "/downloads/latest.zip";
   navigate('/install');
 };
   return (
