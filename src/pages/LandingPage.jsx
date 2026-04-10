@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import Footer from '../components/Footer';
 function LandingPage() {
     const navigate = useNavigate();
 const handleDownload = () => {
@@ -77,6 +78,63 @@ const handleDownload = () => {
           <img src="/0.png" alt="Terminverwaltung in der MSD App" className="showcase-image" />
         </div>
       </section>
+      <section className="showcase-section">
+        <div className="showcase-content">
+          <h2>Automatische Planzuteilung</h2>
+          <p>
+            Verabschieden Sie sich von manuellen Listen. Unser intelligenter Algorithmus verteilt die Dienste 
+            gerecht auf alle Messdiener, unter Berücksichtigung von Erfahrung und Verfügbarkeit.
+          </p>
+          <ul className="showcase-list">
+            <li>✔️ Intelligente Verteilung basierend auf Erfahrung</li>
+            <li>✔️ Gerechte Auslastung aller Messdiener</li>
+            <li>✔️ Änderungen werden sofort im digitalen Plan reflektiert</li>
+            <li>✔️ Volle Kontrolle durch die Leiterrunde vor Veröffentlichung</li>
+          </ul>
+        </div>
+        <div className="showcase-image-wrapper">
+          <img src="/2.png" alt="Plananzeige in der MSD App" className="hero-image" />
+        </div>
+      </section>
+
+      <section className="showcase-section">
+        <div className="showcase-image-wrapper">
+          <img src="/3.png" alt="Priesterdashboard in der MSD App" className="hero-image" />
+        </div>
+        <div className="showcase-content">
+          <h2>Volle Kontrolle für Priester & Sakristei</h2>
+          <p>
+            Manchmal erfährt man erst kurz vor der Messe von Ausfällen. Mit der App können Priester oder Sakristane 
+            fehlende Messdiener direkt im System markieren, um den Status der Besetzung sofort für alle sichtbar anzupassen.
+          </p>
+          <ul className="showcase-list">
+            <li>✔️ Spontane Korrekturen direkt vor Ort möglich</li>
+            <li>✔️ Sofortige Benachrichtigung der restlichen Gruppe</li>
+            <li>✔️ Übersicht, welche Messdiener aktuell als "fehlend" gemeldet sind</li>
+            <li>✔️ Unterstützung bei der schnellen Umplanung in Notfällen</li>
+          </ul>
+        </div>
+      </section>
+
+      <section className="showcase-section">
+        <div className="showcase-content">
+          <h2>Integrierte Tauschbörse</h2>
+          <p>
+            Wer kennt es nicht? Die Nachrichtengruppen für den Diensttausch quellen über. 
+            Unsere App bietet eine dedizierte Tauschbörse, in der Dienste mit wenigen Klicks angeboten 
+            und sicher übernommen werden können.
+          </p>
+          <ul className="showcase-list">
+            <li>✔️ Direkte Anfrage an andere Messdiener</li>
+            <li>✔️ Automatisierte Aktualisierung nach Annahme</li>
+            <li>✔️ Push-Benachrichtigungen bei neuen Tauschangeboten</li>
+            <li>✔️ Transparenter Verlauf für alle Beteiligten</li>
+          </ul>
+        </div>
+        <div className="showcase-image-wrapper">
+          <img src="/4.png" alt="Tauschbörse in der MSD App" className="hero-image" />
+        </div>
+      </section>
 
       {/* Creator's Note Section */}
       <section className="creator-section">
@@ -107,16 +165,6 @@ const handleDownload = () => {
           <button className="btn-primary large" onClick={handleDownload}>Jetzt Source Code Herunterladen</button>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="footer">
-        <div className="footer-content">
-          <p>&copy; {new Date().getFullYear()} MSD App - Ein Projekt von Bernhard Tepe.</p>
-          <p>
-            Open Source für Gemeinden. Der Quellcode ist im Download-Paket enthalten.
-          </p>
-        </div>
-      </footer>
     </>
   );
 }
