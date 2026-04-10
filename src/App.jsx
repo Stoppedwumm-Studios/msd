@@ -6,6 +6,7 @@ import LandingPage from './pages/LandingPage';
 import Install from './pages/Install';
 import Versions from './pages/Versions';
 import LoadingScreen from './components/LoadingScreen';
+import Footer from './components/Footer';
 
 function App() {
   const [loading, setLoading] = React.useState(true);
@@ -38,6 +39,7 @@ function App() {
             <Route path="/versions" element={<Versions />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </BrowserRouter>
   );
