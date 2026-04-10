@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import LandingPage from './pages/LandingPage';
 import Install from './pages/Install';
 import Versions from './pages/Versions';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/versions" element={<Versions />} />
           </Routes>
         </main>
+        <Footer />
       </div>
     </BrowserRouter>
   );
