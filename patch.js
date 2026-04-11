@@ -8,7 +8,6 @@ function generateStructurePatch(inputFileName, outputFileName) {
         }
 
         const sqlContent = fs.readFileSync(inputFileName, 'utf8');
-        
         const statements = sqlContent.split(';');
         const patchStatements = [];
 
@@ -27,25 +26,32 @@ function generateStructurePatch(inputFileName, outputFileName) {
                 patchStatements.push(formatted);
             }
 
-            // 2. Handle ALTER TABLE (The problematic part)
+            // 2. Handle ALTER TABLE
             else if (/^ALTER\s+TABLE/i.test(cleanStmt)) {
-                // Remove auto-increment resets
+                // Skip plain AUTO_INCREMENT resets
                 if (/\s+AUTO_INCREMENT\s*=\s*\d+/i.test(cleanStmt) && !/ADD|MODIFY|DROP/i.test(cleanStmt)) {
                     continue; 
                 }
 
-                let formatted = cleanStmt.replace(/,\s*AUTO_INCREMENT\s*=\s*\d+/gi, '');
-                formatted = formatted.replace(/AUTO_INCREMENT\s*=\s*\d+/gi, '');
+                let formatted = cleanStmt;
 
-                /**
-                 * IDEMPOTENT ALTER TABLE (MariaDB 10.5+)
-                 * We inject "IF NOT EXISTS" after ADD for:
-                 * COLUMN, INDEX, KEY, UNIQUE KEY, UNIQUE INDEX, CONSTRAINT
-                 */
-                formatted = formatted.replace(
-                    /ADD\s+(COLUMN|INDEX|KEY|UNIQUE\s+KEY|UNIQUE\s+INDEX|CONSTRAINT)\s+(?!IF\s+NOT\s+EXISTS)/gi, 
-                    'ADD $1 IF NOT EXISTS '
-                );
+                // Handle PRIMARY KEY specially (MariaDB 10.5+ syntax)
+                // Converts: ADD PRIMARY KEY (`id`) -> ADD CONSTRAINT IF NOT EXISTS PRIMARY KEY (`id`)
+                if (/ADD\s+PRIMARY\s+KEY/i.test(formatted)) {
+                    formatted = formatted.replace(/ADD\s+PRIMARY\s+KEY/i, 'ADD CONSTRAINT IF NOT EXISTS PRIMARY KEY');
+                } 
+                else {
+                    // Handle regular COLUMNS, INDEXES, and UNIQUE KEYS
+                    // Inject IF NOT EXISTS after ADD
+                    formatted = formatted.replace(
+                        /ADD\s+(COLUMN|INDEX|KEY|UNIQUE\s+KEY|UNIQUE\s+INDEX|CONSTRAINT)\s+(?!IF\s+NOT\s+EXISTS)/gi, 
+                        'ADD $1 IF NOT EXISTS '
+                    );
+                }
+
+                // Clean up any remaining auto-increment resets in complex ALTERS
+                formatted = formatted.replace(/,\s*AUTO_INCREMENT\s*=\s*\d+/gi, '');
+                formatted = formatted.replace(/AUTO_INCREMENT\s*=\s*\d+/gi, '');
 
                 patchStatements.push(formatted);
             }
@@ -53,7 +59,7 @@ function generateStructurePatch(inputFileName, outputFileName) {
 
         const finalSql = [
             "-- Database Layout Patch (Idempotent)",
-            "-- Generated on: " + new Date().toISOString(),
+            "-- Generated: " + new Date().toISOString(),
             "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';",
             "SET FOREIGN_KEY_CHECKS = 0;", 
             "",
