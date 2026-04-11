@@ -69,6 +69,13 @@ async function main() {
         }
     }
     try {
+        await fs.rm("./dist", { recursive: true, force: true });
+        await fs.mkdir("./dist", { recursive: true });
+    } catch (e) {
+        await fs.mkdir("./dist", { recursive: true });
+    }
+
+    try {
         const files = await fs.readdir("./build");
         for (const file of files) {
             if (file.endsWith(".zip")) {
