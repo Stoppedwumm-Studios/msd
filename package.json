@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "echo Doin exactly nothing... && exit 0"
+    "build": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Stoppedwumm-Studios/msd/issues"
   },
-  "homepage": "https://github.com/Stoppedwumm-Studios/msd#readme"
+  "homepage": "https://github.com/Stoppedwumm-Studios/msd#readme",
+  "dependencies": {
+    "adm-zip": "^0.5.17"
+  }
 }
