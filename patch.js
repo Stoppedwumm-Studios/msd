@@ -35,21 +35,19 @@ function generateStructurePatch(inputFileName, outputFileName) {
 
                 let formatted = cleanStmt;
 
-                // Handle PRIMARY KEY specially (MariaDB 10.5+ syntax)
-                // Converts: ADD PRIMARY KEY (`id`) -> ADD CONSTRAINT IF NOT EXISTS PRIMARY KEY (`id`)
-                if (/ADD\s+PRIMARY\s+KEY/i.test(formatted)) {
-                    formatted = formatted.replace(/ADD\s+PRIMARY\s+KEY/i, 'ADD CONSTRAINT IF NOT EXISTS PRIMARY KEY');
-                } 
-                else {
-                    // Handle regular COLUMNS, INDEXES, and UNIQUE KEYS
-                    // Inject IF NOT EXISTS after ADD
+                // IMPORTANT: We do NOT add IF NOT EXISTS to PRIMARY KEY (not supported by MariaDB)
+                // We only add it to COLUMN, INDEX, UNIQUE KEY, etc.
+                if (!/ADD\s+PRIMARY\s+KEY/i.test(formatted)) {
                     formatted = formatted.replace(
-                        /ADD\s+(COLUMN|INDEX|KEY|UNIQUE\s+KEY|UNIQUE\s+INDEX|CONSTRAINT)\s+(?!IF\s+NOT\s+EXISTS)/gi, 
+                        /ADD\s+(COLUMN|INDEX|CONSTRAINT|UNIQUE\s+KEY|UNIQUE\s+INDEX)\s+(?!IF\s+NOT\s+EXISTS)/gi, 
                         'ADD $1 IF NOT EXISTS '
                     );
+                    
+                    // Special case for plain "ADD KEY" (but not PRIMARY KEY)
+                    formatted = formatted.replace(/ADD\s+KEY\s+(?!IF\s+NOT\s+EXISTS|PRIMARY\s+KEY)/gi, 'ADD KEY IF NOT EXISTS ');
                 }
 
-                // Clean up any remaining auto-increment resets in complex ALTERS
+                // Clean up auto-increment resets
                 formatted = formatted.replace(/,\s*AUTO_INCREMENT\s*=\s*\d+/gi, '');
                 formatted = formatted.replace(/AUTO_INCREMENT\s*=\s*\d+/gi, '');
 
@@ -60,12 +58,14 @@ function generateStructurePatch(inputFileName, outputFileName) {
         const finalSql = [
             "-- Database Layout Patch (Idempotent)",
             "-- Generated: " + new Date().toISOString(),
+            "SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0;", // Suppress "Table already exists" warnings
             "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';",
             "SET FOREIGN_KEY_CHECKS = 0;", 
             "",
             patchStatements.join(';\n\n') + ";",
             "",
-            "SET FOREIGN_KEY_CHECKS = 1;"
+            "SET FOREIGN_KEY_CHECKS = 1;",
+            "SET SQL_NOTES=@OLD_SQL_NOTES;"
         ].join('\n');
 
         fs.writeFileSync(outputFileName, finalSql);
