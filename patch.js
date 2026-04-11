@@ -9,52 +9,53 @@ function generateStructurePatch(inputFileName, outputFileName) {
 
         const sqlContent = fs.readFileSync(inputFileName, 'utf8');
         
-        // Split by semicolon, but handle potential newlines
         const statements = sqlContent.split(';');
         const patchStatements = [];
 
         for (let stmt of statements) {
-            // 1. Clean the statement: remove comments and trim whitespace
             let cleanStmt = stmt
-                .replace(/--.*$/gm, '')      // Remove single line comments
-                .replace(/\/\*[\s\S]*?\*\//g, '') // Remove block comments
+                .replace(/--.*$/gm, '')      
+                .replace(/\/\*[\s\S]*?\*\//g, '') 
                 .trim();
 
             if (!cleanStmt) continue;
 
-            // 2. Capture CREATE TABLE
+            // 1. Handle CREATE TABLE
             if (/^CREATE\s+TABLE/i.test(cleanStmt)) {
-                // Ensure "IF NOT EXISTS" is present
                 let formatted = cleanStmt.replace(/CREATE\s+TABLE/i, 'CREATE TABLE IF NOT EXISTS');
-                
-                // Remove specific AUTO_INCREMENT starting values (e.g., AUTO_INCREMENT=15)
-                // We keep the "AUTO_INCREMENT" keyword but remove the "= number" 
                 formatted = formatted.replace(/AUTO_INCREMENT\s*=\s*\d+/gi, '');
-                
                 patchStatements.push(formatted);
             }
 
-            // 3. Capture ALTER TABLE (Keys and Constraints)
+            // 2. Handle ALTER TABLE (The problematic part)
             else if (/^ALTER\s+TABLE/i.test(cleanStmt)) {
-                // Filter out statements that ONLY set the next AUTO_INCREMENT value
-                // We want to keep Index/Primary Key additions, but not value resets
+                // Remove auto-increment resets
                 if (/\s+AUTO_INCREMENT\s*=\s*\d+/i.test(cleanStmt) && !/ADD|MODIFY|DROP/i.test(cleanStmt)) {
                     continue; 
                 }
 
-                // If it's a MODIFY statement that includes an AUTO_INCREMENT reset, clean just the reset
                 let formatted = cleanStmt.replace(/,\s*AUTO_INCREMENT\s*=\s*\d+/gi, '');
                 formatted = formatted.replace(/AUTO_INCREMENT\s*=\s*\d+/gi, '');
+
+                /**
+                 * IDEMPOTENT ALTER TABLE (MariaDB 10.5+)
+                 * We inject "IF NOT EXISTS" after ADD for:
+                 * COLUMN, INDEX, KEY, UNIQUE KEY, UNIQUE INDEX, CONSTRAINT
+                 */
+                formatted = formatted.replace(
+                    /ADD\s+(COLUMN|INDEX|KEY|UNIQUE\s+KEY|UNIQUE\s+INDEX|CONSTRAINT)\s+(?!IF\s+NOT\s+EXISTS)/gi, 
+                    'ADD $1 IF NOT EXISTS '
+                );
 
                 patchStatements.push(formatted);
             }
         }
 
         const finalSql = [
-            "-- Database Layout Patch",
+            "-- Database Layout Patch (Idempotent)",
             "-- Generated on: " + new Date().toISOString(),
             "SET SQL_MODE = 'NO_AUTO_VALUE_ON_ZERO';",
-            "SET FOREIGN_KEY_CHECKS = 0;", // Good practice for structural patches
+            "SET FOREIGN_KEY_CHECKS = 0;", 
             "",
             patchStatements.join(';\n\n') + ";",
             "",
@@ -62,7 +63,7 @@ function generateStructurePatch(inputFileName, outputFileName) {
         ].join('\n');
 
         fs.writeFileSync(outputFileName, finalSql);
-        console.log(`Successfully generated: ${outputFileName}`);
+        console.log(`Successfully generated idempotent patch: ${outputFileName}`);
         
     } catch (err) {
         console.error("Error processing SQL file:", err.message);
