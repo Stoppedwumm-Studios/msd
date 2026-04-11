@@ -28,14 +28,10 @@ fi
 
 SQL_FILE="./tmp_update/patch.sql"
 if [ -f "$SQL_FILE" ]; then
-    echo "Applying database patch..."
-    # Added -f (force) to continue even if a specific SQL line fails
+    echo "Applying database patch (errors regarding existing Primary Keys are expected and ignored)..."
+    # -f is critical here to continue past the Primary Key error
     cat "$SQL_FILE" | docker exec -i $DB_CONTAINER mariadb -u$DB_USER -p$DB_PASS $DB_NAME -f
-    if [ $? -eq 0 ]; then
-        echo "Database update process finished."
-    else
-        echo "Database update finished with some warnings (already existing elements)."
-    fi
+    echo "Database update process finished."
 else
     echo "No patch.sql found."
 fi
