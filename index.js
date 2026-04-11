@@ -7,13 +7,21 @@ async function main() {
     const appData = await app.json(); 
 
     // Load the bash template
-    const shellTemplate = await fs.readFile("./upgrade_template.sh", "utf-8");
+    let shellTemplate = "";
+    try {
+        shellTemplate = await fs.readFile("./upgrade_template.sh", "utf-8");
+    } catch (e) {
+        console.error("Error: upgrade_template.sh not found in current directory.");
+        return;
+    }
 
+    // 1. Setup Build Directory
     try {
         await fs.rm("./build", { recursive: true, force: true });
     } catch (e) {}
     await fs.mkdir("./build", { recursive: true });
 
+    // 2. Identify the latest version
     const versions = appData
         .map(f => f.match(/(\d+\.\d+\.\d+)/))
         .filter(match => match !== null)
@@ -22,7 +30,7 @@ async function main() {
 
     const highestVersion = versions[0];
 
-    // Download Phase
+    // 3. Download Files
     for (const file of appData) {
         console.log(`Downloading ${file}...`);
         const res = await fetch("https://messdiener.pages.dev/downloads/" + file);
@@ -30,9 +38,9 @@ async function main() {
         await fs.writeFile("./build/" + file, Buffer.from(buffer));
     }
 
-    // Patching & Packaging Phase
+    // 4. Patch and Wrap
     for (const file of appData) {
-        if (!file.endsWith(".zip")) continue;
+        if (!file.endsWith(".zip") || file.startsWith("bundle_")) continue;
 
         let sourceForPatch = file.replace(".zip", "");
         
@@ -49,47 +57,55 @@ async function main() {
         const sqlOutput = `./build/patch_${file.replace(".zip", ".sql")}`;
 
         try {
+            // Check if SQL patch exists
             await fs.access(sqlInput);
+            
+            // Generate the patch file
             generateStructurePatch(sqlInput, sqlOutput);
 
-            // 1. Inject SQL into the internal zip
+            // Inject the SQL file into the VERSIONED zip
+            // IMPORTANT: The "" as second arg ensures it's placed in the root of the zip
             const zip = new AdmZip("./build/" + file);
-            zip.addLocalFile(sqlOutput, "patch.sql");
+            zip.addLocalFile(sqlOutput, "", "patch.sql"); 
             zip.writeZip("./build/" + file);
             
-            console.log(`Successfully patched internal ${file}`);
+            console.log(`Patched ${file} with SQL.`);
 
-            // 2. Create the Wrapper Zip (VERSION.zip)
-            // This contains the zip file and the customized upgrade.sh
+            // Create the Outer Wrapper (the file the user actually downloads)
             const wrapperZip = new AdmZip();
             
-            // Customize shell script for this specific version
-            const customShell = shellTemplate.replace("§ZIP§", file);
-            wrapperZip.addFile("upgrade.sh", Buffer.from(customShell, "utf-8"), "", 0o755); // executable permissions
-            
-            // Add the versioned zip itself into the wrapper
+            // Add the versioned zip into the wrapper
             wrapperZip.addLocalFile("./build/" + file);
 
-            // Save the wrapper zip
-            const wrapperName = `bundle_${file}`;
-            wrapperZip.writeZip("./build/" + wrapperName);
+            // Create the personalized bash script
+            const customShell = shellTemplate.replace("§ZIP§", file);
+            wrapperZip.addFile("upgrade.sh", Buffer.from(customShell, "utf-8"), "", 0o755);
+
+            // Save the wrapper
+            wrapperZip.writeZip("./build/bundle_" + file);
 
         } catch (err) {
-            console.error(`Skipping patch for ${file}: ${err.message}`);
+            console.warn(`Note: No patch generated for ${file} (Source SQL not found).`);
+            
+            // Still create the bundle even without a patch
+            const wrapperZip = new AdmZip();
+            wrapperZip.addLocalFile("./build/" + file);
+            const customShell = shellTemplate.replace("§ZIP§", file);
+            wrapperZip.addFile("upgrade.sh", Buffer.from(customShell, "utf-8"), "", 0o755);
+            wrapperZip.writeZip("./build/bundle_" + file);
         }
     }
 
-    // Move to Dist
+    // 5. Move bundles to Dist
     try {
         await fs.rm("./dist", { recursive: true, force: true });
         await fs.mkdir("./dist", { recursive: true });
         const files = await fs.readdir("./build");
         for (const file of files) {
-            // We only move the "bundle_" files to dist to keep it clean
-            if (file.startsWith("bundle_") && file.endsWith(".zip")) {
-                const finalName = file.replace("bundle_", "");
-                await fs.copyFile(`./build/${file}`, `./dist/${finalName}`);
-                console.log(`Exported final package: ${finalName}`);
+            if (file.startsWith("bundle_")) {
+                const cleanName = file.replace("bundle_", "");
+                await fs.copyFile(`./build/${file}`, `./dist/${cleanName}`);
+                console.log(`Created dist/${cleanName}`);
             }
         }
     } catch (err) {
