@@ -60,6 +60,13 @@ function Versions() {
                     >
                       💾 Download
                     </a>
+                    <a 
+                      href={`https://home.messdiener.pages.dev/${version}`} 
+                      className={`btn-secondary small ${version === 'latest.zip' ? 'btn-highlight' : ''}`}
+                      download
+                    >
+                      💾 Upgrade Packet Download
+                    </a>
                   </td>
                 </tr>
               ))}
